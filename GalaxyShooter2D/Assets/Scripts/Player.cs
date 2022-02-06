@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private float _speed = 5f;
     [SerializeField] private GameObject _laserPrefab;
     [SerializeField] private float _rateOfFire = 0.5f;
+    [SerializeField] private int _playerHealth = 3;
+    private float _speed = 5f;
     private float _canFire = -1f;
 
 
@@ -76,5 +77,15 @@ public class Player : MonoBehaviour
         GameObject laser = Instantiate(_laserPrefab, frontOfShip, Quaternion.identity);
 
         Destroy(laser, 1.5f);
+    }
+
+    public void Damage(int damage)
+    {
+        _playerHealth -= damage;
+
+        if (_playerHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
