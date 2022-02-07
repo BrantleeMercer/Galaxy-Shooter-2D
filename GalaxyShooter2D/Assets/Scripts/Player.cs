@@ -9,11 +9,18 @@ public class Player : MonoBehaviour
     [SerializeField] private int _playerHealth = 3;
     private float _speed = 5f;
     private float _canFire = -1f;
+    private SpawnManager _spawnManager;
 
 
     void Start()
     {
         transform.position = new Vector3(0,0,0);
+        _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+
+        if(_spawnManager == null)
+        {
+            Debug.LogError("Spawn Manager is Null");
+        }
     }
 
 
@@ -85,6 +92,7 @@ public class Player : MonoBehaviour
 
         if (_playerHealth <= 0)
         {
+            _spawnManager.SetStopSpawing();
             Destroy(gameObject);
         }
     }
