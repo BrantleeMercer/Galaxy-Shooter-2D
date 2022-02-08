@@ -31,7 +31,7 @@ public class Powerup : MonoBehaviour
                     break;
 
                     case 2: // 2 = Shields
-                        Debug.Log("Shields Aquired");
+                        player.ActivateShields();
                     break;   
 
                     default:

@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     private float _canFire = -1f;
     private SpawnManager _spawnManager;
     private bool _tripleShotActive = false, _isSpeedBoosted = false, _isShieldActive = false;
+    private Transform _shieldVisualizer;
 
 
     void Start()
@@ -21,6 +22,8 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("Spawn Manager is Null");
         }
+        
+        _shieldVisualizer = transform.GetChild(0);
     }
 
 
@@ -105,6 +108,13 @@ public class Player : MonoBehaviour
 
     public void Damage(int damage)
     {
+        if(_isShieldActive)
+        {
+            damage = 0;
+            _isShieldActive = false;
+            _shieldVisualizer.gameObject.SetActive(false);
+        }
+
         _playerHealth -= damage;
 
         if (_playerHealth <= 0)
@@ -131,7 +141,7 @@ public class Player : MonoBehaviour
      public void ActivateShields()
     {
         _isShieldActive = true;
-        StartCoroutine(nameof(DeactivateShields));
+        _shieldVisualizer.gameObject.SetActive(true);
     }
 
 #endregion
@@ -148,12 +158,6 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         _isSpeedBoosted = false;
-    }
-
-    IEnumerator DeactivateShields()
-    {
-        yield return new WaitForSeconds(5f);
-        _isShieldActive = false;
     }
 
 #endregion
