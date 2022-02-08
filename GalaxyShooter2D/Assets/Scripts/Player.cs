@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private GameObject _laserPrefab;
-    [SerializeField] private float _rateOfFire = 0.5f;
+    [SerializeField] private GameObject _laserPrefab, _tripleShotPrefab;
+    [SerializeField] private float _rateOfFire = 0.5f, _speed = 5f;
     [SerializeField] private int _playerHealth = 3;
-    [SerializeField] private float _speed = 5f;
     private float _canFire = -1f;
     private SpawnManager _spawnManager;
+    private bool _tripleShotActive = false;
 
 
     void Start()
@@ -81,9 +81,18 @@ public class Player : MonoBehaviour
     {
         _canFire = Time.time + _rateOfFire;
         Vector3 frontOfShip = new Vector3(transform.position.x, transform.position.y + 1.05f, transform.position.z);
-        GameObject laser = Instantiate(_laserPrefab, frontOfShip, Quaternion.identity);
-
-        Destroy(laser, 1.5f);
+        
+        if(_tripleShotActive)
+        {
+            GameObject tripleShot = Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            Destroy(tripleShot, 1.5f);
+        }
+        else
+        {
+            GameObject laser = Instantiate(_laserPrefab, frontOfShip, Quaternion.identity);
+            Destroy(laser, 1.5f);
+        }
+       
     }
 
     public void Damage(int damage)
@@ -95,5 +104,17 @@ public class Player : MonoBehaviour
             _spawnManager.SetStopSpawing();
             Destroy(gameObject);
         }
+    }
+
+    public void ActivateTripleShot()
+    {
+        _tripleShotActive = true;
+        StartCoroutine(nameof(DeactivateTripleShotRoutine));
+    }
+
+    IEnumerator DeactivateTripleShotRoutine()
+    {
+        yield return new WaitForSeconds(5f);
+        _tripleShotActive = false;
     }
 }
