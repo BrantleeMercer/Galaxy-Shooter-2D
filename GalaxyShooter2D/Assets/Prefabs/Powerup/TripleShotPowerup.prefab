@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 73715133020584115}
   - component: {fileID: 3961805787520898419}
   - component: {fileID: 2662426131549123832}
-  - component: {fileID: 3614991856926934215}
+  - component: {fileID: 2777440392848105468}
   m_Layer: 0
   m_Name: TripleShotPowerup
   m_TagString: Untagged
@@ -135,7 +135,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.9
---- !u!95 &3614991856926934215
+--- !u!95 &2777440392848105468
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -145,7 +145,7 @@ Animator:
   m_GameObject: {fileID: 6905660411251579180}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f6bfdac9d9f0e724fa8b1202fca7741d, type: 2}
+  m_Controller: {fileID: 9100000, guid: db50542cd4ed2a54492f801b2ab8dd1b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
