@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _enemyPrefab, _enemyContainer, _tripleShotPowerup;
+    [SerializeField] private GameObject _enemyPrefab, _enemyContainer;
+    [SerializeField] private GameObject[] _listOfPowerups;
     private bool _stopSpawning = false;
+    
 
     void Start()
     {
@@ -33,7 +35,7 @@ public class SpawnManager : MonoBehaviour
         {
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
 
-            GameObject spawnedTripleShot = Instantiate(_tripleShotPowerup, randomSpawnLocation, Quaternion.identity);
+            GameObject spawnedTripleShot = Instantiate(_listOfPowerups[Random.Range(0, _listOfPowerups.Length)], randomSpawnLocation, Quaternion.identity);
 
             yield return new WaitForSeconds(Random.Range(3f, 7f));
         }

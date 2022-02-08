@@ -5,11 +5,11 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private GameObject _laserPrefab, _tripleShotPrefab;
-    [SerializeField] private float _rateOfFire = 0.5f, _speed = 5f;
+    [SerializeField] private float _rateOfFire = 0.5f, _speed = 5f, _boostedSpeed = 9f;
     [SerializeField] private int _playerHealth = 3;
     private float _canFire = -1f;
     private SpawnManager _spawnManager;
-    private bool _tripleShotActive = false;
+    private bool _tripleShotActive = false, _isSpeedBoosted = false, _isShieldActive = false;
 
 
     void Start()
@@ -42,7 +42,15 @@ public class Player : MonoBehaviour
 
         Vector3 direction = new Vector3(userInputHorz, userInputVert, 0);
         
-        transform.Translate(direction * _speed * Time.deltaTime);
+        if (_isSpeedBoosted)
+        {
+            transform.Translate(direction * _boostedSpeed * Time.deltaTime);
+        }
+        else 
+        {
+            transform.Translate(direction * _speed * Time.deltaTime);
+        }
+        
 
         VerticalBounds();
         HorizontalBounds();
@@ -106,15 +114,47 @@ public class Player : MonoBehaviour
         }
     }
 
+#region Activate Powerups
+
     public void ActivateTripleShot()
     {
         _tripleShotActive = true;
         StartCoroutine(nameof(DeactivateTripleShotRoutine));
     }
 
+    public void ActivateSpeedBoost()
+    {
+        _isSpeedBoosted = true;
+        StartCoroutine(nameof(DeactivateSpeedBoost));
+    }
+
+     public void ActivateShields()
+    {
+        _isShieldActive = true;
+        StartCoroutine(nameof(DeactivateShields));
+    }
+
+#endregion
+
+#region Coroutines
+
     IEnumerator DeactivateTripleShotRoutine()
     {
         yield return new WaitForSeconds(5f);
         _tripleShotActive = false;
     }
+
+    IEnumerator DeactivateSpeedBoost()
+    {
+        yield return new WaitForSeconds(5f);
+        _isSpeedBoosted = false;
+    }
+
+    IEnumerator DeactivateShields()
+    {
+        yield return new WaitForSeconds(5f);
+        _isShieldActive = false;
+    }
+
+#endregion
 }

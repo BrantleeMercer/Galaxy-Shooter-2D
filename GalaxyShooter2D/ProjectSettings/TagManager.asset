@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Laser
   - Enemy
+  - Speed
+  - TripleShot
   layers:
   - Default
   - TransparentFX

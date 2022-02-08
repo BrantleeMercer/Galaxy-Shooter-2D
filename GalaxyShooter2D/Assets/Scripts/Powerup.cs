@@ -5,7 +5,8 @@ using UnityEngine;
 public class Powerup : MonoBehaviour
 {
     [SerializeField] private float _speed = 3f;
-    
+    [SerializeField] private int _powerupID; // Each powerup will have it's own ID
+
     void Update()
     {
         SpawnPowerup();
@@ -19,7 +20,24 @@ public class Powerup : MonoBehaviour
 
             if (player != null)
             {
-                player.ActivateTripleShot();
+                switch (_powerupID)
+                {
+                    case 0: // 0 = TripleShot
+                        player.ActivateTripleShot();
+                    break;
+
+                    case 1: // 1 = Speed
+                        player.ActivateSpeedBoost();
+                    break;
+
+                    case 2: // 2 = Shields
+                        Debug.Log("Shields Aquired");
+                    break;   
+
+                    default:
+                        Debug.LogError("Powerup Not Accounted For");
+                    break;                 
+                }
             }
             
             Destroy(gameObject);
