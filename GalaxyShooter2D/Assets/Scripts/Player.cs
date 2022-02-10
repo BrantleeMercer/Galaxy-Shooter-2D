@@ -6,9 +6,10 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private GameObject _laserPrefab, _tripleShotPrefab;
     [SerializeField] private float _rateOfFire = 0.5f, _speed = 5f, _boostedSpeed = 9f;
-    [SerializeField] private int _playerHealth = 3;
+    [SerializeField] private int _playerHealth = 3, _score = 0;
     private float _canFire = -1f;
     private SpawnManager _spawnManager;
+    private UIManager _uiManager;
     private bool _tripleShotActive = false, _isSpeedBoosted = false, _isShieldActive = false;
     private Transform _shieldVisualizer;
 
@@ -17,10 +18,15 @@ public class Player : MonoBehaviour
     {
         transform.position = new Vector3(0,0,0);
         _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
-        if(_spawnManager == null)
+        if (_spawnManager == null)
         {
-            Debug.LogError("Spawn Manager is Null");
+            Debug.LogError("Spawn Manager is NULL");
+        }
+        if (_uiManager == null)
+        {
+            Debug.LogError("UI Manager is NULL");
         }
         
         _shieldVisualizer = transform.GetChild(0);
@@ -116,12 +122,19 @@ public class Player : MonoBehaviour
         }
 
         _playerHealth -= damage;
+        _uiManager.UpdateLivesImage(_playerHealth);
 
         if (_playerHealth <= 0)
         {
             _spawnManager.SetStopSpawing();
             Destroy(gameObject);
         }
+    }
+
+    public void AddToScore(int scoreValue)
+    {
+        _score += scoreValue;
+        _uiManager.UpdateScoreText(_score);
     }
 
 #region Activate Powerups
@@ -161,4 +174,5 @@ public class Player : MonoBehaviour
     }
 
 #endregion
+
 }
