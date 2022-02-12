@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private GameObject _laserPrefab, _tripleShotPrefab;
+    [SerializeField] private GameObject[] _engineDamage;
     [SerializeField] private float _rateOfFire = 0.5f, _speed = 5f, _boostedSpeed = 9f;
     [SerializeField] private int _playerHealth = 3, _score = 0;
     private float _canFire = -1f;
@@ -122,13 +123,59 @@ public class Player : MonoBehaviour
         }
 
         _playerHealth -= damage;
+
         _uiManager.UpdateLivesImage(_playerHealth);
 
-        if (_playerHealth <= 0)
+        switch(_playerHealth)
         {
-            _spawnManager.SetStopSpawing();
-            Destroy(gameObject);
+            case 2:
+                int engineSelection = Random.Range(0, _engineDamage.Length);
+                _engineDamage[engineSelection].gameObject.SetActive(true);
+            break;
+
+            case 1:
+                if (!_engineDamage[0].gameObject.activeInHierarchy)
+                {
+                    _engineDamage[0].gameObject.SetActive(true);
+                }
+                else if (!_engineDamage[1].gameObject.activeInHierarchy)
+                {
+                    _engineDamage[1].gameObject.SetActive(true);
+                }
+            break;
+
+            case 0:
+                _spawnManager.SetStopSpawing();
+                Destroy(gameObject);
+            break;
+
+            default:
+                Debug.LogError($"_playerHealth :: Player == Not accounted for: {_playerHealth}");
+            break;
         }
+
+        // if (_playerHealth == 2 )
+        // {
+        //     int engineSelection = Random.Range(0, _engineDamage.Length);
+
+        //     _engineDamage[engineSelection].gameObject.SetActive(true);
+        // } 
+        // else if (_playerHealth == 1)
+        // {
+        //     if (!_engineDamage[0].gameObject.activeInHierarchy)
+        //     {
+        //         _engineDamage[0].gameObject.SetActive(true);
+        //     }
+        //     else if (!_engineDamage[1].gameObject.activeInHierarchy)
+        //     {
+        //         _engineDamage[1].gameObject.SetActive(true);
+        //     }
+        // }
+        // else if (_playerHealth <= 0)
+        // {
+        //     _spawnManager.SetStopSpawing();
+        //     Destroy(gameObject);
+        // }
     }
 
     public void AddToScore(int scoreValue)

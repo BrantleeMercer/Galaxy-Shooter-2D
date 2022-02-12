@@ -53,6 +53,7 @@ public class UIManager : MonoBehaviour
             _gameOverText.text = "GAME OVER";
             _restartInstructionsText.text = "PRESS \"R\" TO RESTART";
             yield return new WaitForSeconds(1f);
+
             _gameOverText.text = "";
             _restartInstructionsText.text = "";
             yield return new WaitForSeconds(.5f);

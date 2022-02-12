@@ -8,8 +8,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject[] _listOfPowerups;
     private bool _stopSpawning = false;
     
-
-    void Start()
+    public void StartSpawning()
     {
         StartCoroutine(nameof(SpawnEnemyRoutine)); 
         StartCoroutine(nameof(SpawnPowerupRoutine));
@@ -17,6 +16,8 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnEnemyRoutine()
     {
+        yield return new WaitForSeconds(3f);
+        
         while (_stopSpawning == false)
         {
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);

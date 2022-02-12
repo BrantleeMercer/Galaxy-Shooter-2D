@@ -5,11 +5,22 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
    [SerializeField] private float _speed = 4f;
+   private Animator _enemyDeathAnim;
    private Player _player;
 
    private void Start() 
    {
        _player = GameObject.Find("Player").GetComponent<Player>();
+       if(_player == null)
+       {
+           Debug.LogError("_player :: Enemy == null");
+       }
+
+       _enemyDeathAnim = GetComponent<Animator>();
+       if(_enemyDeathAnim == null)
+       {
+           Debug.LogError("_enemyDeathAnim :: Enemy == null");
+       }
    }
 
     void Update()
@@ -38,7 +49,8 @@ public class Enemy : MonoBehaviour
                 _player.Damage(1);
             }
 
-            Destroy(gameObject);
+            PlayDeathAnimation();
+
         }
         else if (other.tag.Equals("Laser"))
         {
@@ -49,8 +61,15 @@ public class Enemy : MonoBehaviour
                 _player.AddToScore(10);
             }
             
-            Destroy(gameObject);
+            PlayDeathAnimation();
+            
         }
-        
+    }
+
+    private void PlayDeathAnimation()
+    {
+        _enemyDeathAnim.SetTrigger("OnEnemyDeath");
+        _speed = 0;
+        Destroy(gameObject, 2.8f);
     }
 }
