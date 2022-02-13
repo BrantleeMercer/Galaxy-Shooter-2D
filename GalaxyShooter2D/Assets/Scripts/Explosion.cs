@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class Explosion : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
-    {
-        Destroy(gameObject, 3f);
-    }
+    {        
+        AudioManager.instance.PlaySoundEffect("explosion");
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Destroy(gameObject, 3f);
     }
 }

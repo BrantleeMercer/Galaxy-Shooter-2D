@@ -70,6 +70,7 @@ public class Enemy : MonoBehaviour
     {
         _enemyDeathAnim.SetTrigger("OnEnemyDeath");
         _speed = 0;
+        AudioManager.instance.PlaySoundEffect("explosion");
         Destroy(gameObject, 2.8f);
     }
 }

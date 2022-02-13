@@ -39,6 +39,8 @@ public class Powerup : MonoBehaviour
                     break;                 
                 }
             }
+
+            AudioManager.instance.PlaySoundEffect("powerup");
             
             Destroy(gameObject);
         }

@@ -110,6 +110,8 @@ public class Player : MonoBehaviour
             GameObject laser = Instantiate(_laserPrefab, frontOfShip, Quaternion.identity);
             Destroy(laser, 1.5f);
         }
+
+        AudioManager.instance.PlaySoundEffect("laser");
        
     }
 
@@ -153,29 +155,6 @@ public class Player : MonoBehaviour
                 Debug.LogError($"_playerHealth :: Player == Not accounted for: {_playerHealth}");
             break;
         }
-
-        // if (_playerHealth == 2 )
-        // {
-        //     int engineSelection = Random.Range(0, _engineDamage.Length);
-
-        //     _engineDamage[engineSelection].gameObject.SetActive(true);
-        // } 
-        // else if (_playerHealth == 1)
-        // {
-        //     if (!_engineDamage[0].gameObject.activeInHierarchy)
-        //     {
-        //         _engineDamage[0].gameObject.SetActive(true);
-        //     }
-        //     else if (!_engineDamage[1].gameObject.activeInHierarchy)
-        //     {
-        //         _engineDamage[1].gameObject.SetActive(true);
-        //     }
-        // }
-        // else if (_playerHealth <= 0)
-        // {
-        //     _spawnManager.SetStopSpawing();
-        //     Destroy(gameObject);
-        // }
     }
 
     public void AddToScore(int scoreValue)
