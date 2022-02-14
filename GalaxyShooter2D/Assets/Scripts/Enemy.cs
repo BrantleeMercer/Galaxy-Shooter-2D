@@ -10,7 +10,9 @@ public class Enemy : MonoBehaviour
     private Player _player;
     private float _rateOfFire = 3f;
     private float _canFire = -1;
+    private bool _isAlive = true;
 
+    
    private void Start() 
    {
        _player = GameObject.Find("Player").GetComponent<Player>();
@@ -30,7 +32,7 @@ public class Enemy : MonoBehaviour
     {
        SpawnEnemy();
 
-       if(Time.time > _canFire)
+       if((Time.time > _canFire) && _isAlive)
        {
            FireEnemyLaser();
        }
@@ -77,6 +79,7 @@ public class Enemy : MonoBehaviour
 
     private void PlayDeathAnimation()
     {
+        _isAlive = false;
         _enemyDeathAnim.SetTrigger("OnEnemyDeath");
         _speed = 0;
         AudioManager.instance.PlaySoundEffect("explosion");

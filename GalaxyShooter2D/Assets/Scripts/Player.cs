@@ -14,6 +14,10 @@ public class Player : MonoBehaviour
     private bool _tripleShotActive = false, _isSpeedBoosted = false, _isShieldActive = false;
     private Transform _shieldVisualizer;
 
+    private bool _isThrusterActive = false;
+    [SerializeField] private float thrusterSpeed = 7f;
+    [SerializeField] private float thrustAndBoost = 12f;
+    
 
     void Start()
     {
@@ -42,6 +46,15 @@ public class Player : MonoBehaviour
         {
             FireLaser();
         }
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            _isThrusterActive = true;
+        }
+        else
+        {
+            _isThrusterActive = false;
+        }
     }
 
 
@@ -51,16 +64,27 @@ public class Player : MonoBehaviour
         float userInputVert = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(userInputHorz, userInputVert, 0);
-        
-        if (_isSpeedBoosted)
+
+        int boost = BoostSpeed(_isThrusterActive, _isSpeedBoosted);
+
+        switch(boost)
         {
-            transform.Translate(direction * _boostedSpeed * Time.deltaTime);
+            case 1: //Thruster and no Speed powerup
+                transform.Translate(direction * thrusterSpeed * Time.deltaTime);
+            break;
+
+            case 2: //Speed power up and no thruster
+                transform.Translate(direction * _boostedSpeed * Time.deltaTime);
+            break;
+
+            case 3: //Both Speed powerup is active and thruster is pressed
+                transform.Translate(direction * thrustAndBoost * Time.deltaTime);
+            break;
+
+            default: //Normal speed
+                transform.Translate(direction * _speed * Time.deltaTime);
+            break;
         }
-        else 
-        {
-            transform.Translate(direction * _speed * Time.deltaTime);
-        }
-        
 
         VerticalBounds();
         HorizontalBounds();
@@ -76,9 +100,6 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, -3.8f, 0);
         }
-
-        //Save this for later
-        // transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, -3.8f),0);
     }
 
     private void HorizontalBounds()
@@ -93,6 +114,30 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(newBound, transform.position.y, 0);
         }
+    }
+
+    private int BoostSpeed(bool thruster, bool speedPowerup)
+    {
+        int speedBoostCombonation;
+
+        if(thruster && !speedPowerup)
+        {
+            speedBoostCombonation = 1;
+        }
+        else if(speedPowerup && !thruster)
+        {
+            speedBoostCombonation = 2;
+        }
+        else if (thruster && speedPowerup)
+        {
+            speedBoostCombonation = 3;
+        }
+        else
+        {
+            speedBoostCombonation = 0;
+        }
+
+        return speedBoostCombonation;
     }
 
     private void FireLaser()
