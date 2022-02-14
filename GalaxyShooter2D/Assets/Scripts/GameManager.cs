@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            Application.Quit(); // Quits the Unity Application
         }
     }
 
