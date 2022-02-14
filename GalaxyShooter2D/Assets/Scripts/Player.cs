@@ -14,9 +14,10 @@ public class Player : MonoBehaviour
     private bool _tripleShotActive = false, _isSpeedBoosted = false, _isShieldActive = false;
     private Transform _shieldVisualizer;
 
-    private bool _isThrusterActive = false;
     [SerializeField] private float thrusterSpeed = 7f;
     [SerializeField] private float thrustAndBoost = 12f;
+    private bool _isThrusterActive = false;
+    private int _shieldStrength = 0;
     
 
     void Start()
@@ -160,9 +161,30 @@ public class Player : MonoBehaviour
     {
         if(_isShieldActive)
         {
+            _shieldStrength -= damage;
+
+            switch(_shieldStrength)
+            {
+                case 2:
+                    _shieldVisualizer.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, .75f);
+                break;
+
+                case 1:
+                    _shieldVisualizer.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, .40f);
+                break;
+
+                case 0:
+                    _isShieldActive = false;
+                    _shieldVisualizer.gameObject.SetActive(false);
+                break;
+
+                default:
+                    _shieldVisualizer.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+                    Debug.LogWarning("Damage :: Player == Shields have more damage than count");
+                break;
+            }
+            
             damage = 0;
-            _isShieldActive = false;
-            _shieldVisualizer.gameObject.SetActive(false);
         }
 
         _playerHealth -= damage;
@@ -230,6 +252,8 @@ public class Player : MonoBehaviour
      public void ActivateShields()
     {
         _isShieldActive = true;
+        _shieldVisualizer.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        _shieldStrength = 3;
         _shieldVisualizer.gameObject.SetActive(true);
     }
 
