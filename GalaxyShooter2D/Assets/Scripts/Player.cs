@@ -107,12 +107,8 @@ public class Player : MonoBehaviour
         }
         else
         {
-            GameObject laser = Instantiate(_laserPrefab, frontOfShip, Quaternion.identity);
-            Destroy(laser, 1.5f);
-        }
-
-        AudioManager.instance.PlaySoundEffect("laser");
-       
+            Instantiate(_laserPrefab, frontOfShip, Quaternion.identity);
+        }       
     }
 
     public void Damage(int damage)
@@ -152,8 +148,17 @@ public class Player : MonoBehaviour
             break;
 
             default:
-                Debug.LogError($"_playerHealth :: Player == Not accounted for: {_playerHealth}");
+                Debug.LogWarning($"_playerHealth :: Player == Not accounted for: {_playerHealth}");
             break;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.tag.Equals("EnemyLaser"))
+        {
+            Destroy(other.gameObject);
+            Damage(1);
         }
     }
 

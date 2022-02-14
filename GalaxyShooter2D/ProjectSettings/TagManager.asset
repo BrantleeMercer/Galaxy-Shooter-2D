@@ -9,6 +9,7 @@ TagManager:
   - Speed
   - TripleShot
   - ShieldAnimation
+  - EnemyLaser
   layers:
   - Default
   - TransparentFX

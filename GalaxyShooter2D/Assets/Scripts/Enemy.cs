@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-   [SerializeField] private float _speed = 4f;
-   private Animator _enemyDeathAnim;
-   private Player _player;
+    [SerializeField] private float _speed = 4f;
+    [SerializeField] private GameObject _laserPrefab;
+    private Animator _enemyDeathAnim;
+    private Player _player;
+    private float _rateOfFire = 3f;
+    private float _canFire = -1;
 
    private void Start() 
    {
@@ -26,6 +29,12 @@ public class Enemy : MonoBehaviour
     void Update()
     {
        SpawnEnemy();
+
+       if(Time.time > _canFire)
+       {
+           FireEnemyLaser();
+       }
+
     }
 
     private void SpawnEnemy()
@@ -71,6 +80,14 @@ public class Enemy : MonoBehaviour
         _enemyDeathAnim.SetTrigger("OnEnemyDeath");
         _speed = 0;
         AudioManager.instance.PlaySoundEffect("explosion");
+        Destroy(GetComponent<Collider2D>());
         Destroy(gameObject, 2.8f);
+    }
+
+    private void FireEnemyLaser()
+    {
+        _rateOfFire = Random.Range(3f,7f);
+        _canFire = Time.time + _rateOfFire;
+        GameObject lasers = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
     }
 }

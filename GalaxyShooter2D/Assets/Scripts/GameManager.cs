@@ -33,6 +33,11 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene(1); //Current game scene is scene 1
         }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     public void SetGameOver(bool isGameOver)
