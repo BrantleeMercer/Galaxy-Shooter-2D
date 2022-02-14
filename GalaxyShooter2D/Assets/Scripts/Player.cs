@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -16,8 +17,10 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float thrusterSpeed = 7f;
     [SerializeField] private float thrustAndBoost = 12f;
+    [SerializeField] private Text _shotCountText;
     private bool _isThrusterActive = false;
     private int _shieldStrength = 0;
+    private int _shotCount = 15;
     
 
     void Start()
@@ -36,6 +39,7 @@ public class Player : MonoBehaviour
         }
         
         _shieldVisualizer = transform.GetChild(0);
+        _shotCountText.text = $"Shots: {_shotCount}";
     }
 
 
@@ -68,7 +72,7 @@ public class Player : MonoBehaviour
 
         int boost = BoostSpeed(_isThrusterActive, _isSpeedBoosted);
 
-        switch(boost)
+        switch (boost)
         {
             case 1: //Thruster and no Speed powerup
                 transform.Translate(direction * thrusterSpeed * Time.deltaTime);
@@ -121,11 +125,11 @@ public class Player : MonoBehaviour
     {
         int speedBoostCombonation;
 
-        if(thruster && !speedPowerup)
+        if (thruster && !speedPowerup)
         {
             speedBoostCombonation = 1;
         }
-        else if(speedPowerup && !thruster)
+        else if (speedPowerup && !thruster)
         {
             speedBoostCombonation = 2;
         }
@@ -143,10 +147,18 @@ public class Player : MonoBehaviour
 
     private void FireLaser()
     {
+        if (_shotCount == 0)
+        {
+            return;
+        }
+
+        _shotCount--;
+        _shotCountText.text = $"Shots: {_shotCount}";
+
         _canFire = Time.time + _rateOfFire;
         Vector3 frontOfShip = new Vector3(transform.position.x, transform.position.y + 1.05f, transform.position.z);
         
-        if(_tripleShotActive)
+        if (_tripleShotActive)
         {
             GameObject tripleShot = Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
             Destroy(tripleShot, 1.5f);
