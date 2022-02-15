@@ -42,6 +42,10 @@ public class Powerup : MonoBehaviour
                         player.ActivateRefillPowerup();
                     break; 
 
+                    case 5: // 5 = Circular shot powerup
+                        player.ActivateCircularShot();
+                    break; 
+
                     default:
                         Debug.LogError("Powerup Not Accounted For");
                     break;                 

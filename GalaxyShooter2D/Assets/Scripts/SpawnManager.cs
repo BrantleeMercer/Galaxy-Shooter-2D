@@ -36,7 +36,19 @@ public class SpawnManager : MonoBehaviour
         {
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
 
-            GameObject spawnedTripleShot = Instantiate(_listOfPowerups[Random.Range(0, _listOfPowerups.Length)], randomSpawnLocation, Quaternion.identity);
+            GameObject nextPowerup = _listOfPowerups[Random.Range(0, _listOfPowerups.Length)];
+
+            if(nextPowerup == _listOfPowerups[_listOfPowerups.Length - 1]) //Make Circular shot rare, NEED TO KEEP CIRCULAR SHOT AS LAST POWERUP!
+            {
+                //Circular shot has 1 in however long the list is chance, and if it is selected, has a 50/50 chance of spawning
+                float chance = Random.value;
+                if(chance < .5f)
+                {
+                    nextPowerup = _listOfPowerups[Random.Range(0, _listOfPowerups.Length - 1)]; 
+                }
+            }
+
+            GameObject spawnedPowerup = Instantiate(nextPowerup, randomSpawnLocation, Quaternion.identity);
 
             yield return new WaitForSeconds(Random.Range(3f, 7f));
         }

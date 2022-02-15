@@ -18,9 +18,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float thrusterSpeed = 7f;
     [SerializeField] private float thrustAndBoost = 12f;
     [SerializeField] private Text _shotCountText;
+    [SerializeField] private GameObject _circularShotPrefab;
     private bool _isThrusterActive = false;
     private int _shieldStrength = 0;
     private int _shotCount = 15;
+    private bool _circularShotActive = false;
     
 
     void Start()
@@ -163,6 +165,11 @@ public class Player : MonoBehaviour
             GameObject tripleShot = Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
             Destroy(tripleShot, 1.5f);
         }
+        else if (_circularShotActive)
+        {
+            GameObject circleShot = Instantiate(_circularShotPrefab, transform.position, Quaternion.identity);
+            Destroy(circleShot, 1.5f);
+        }
         else
         {
             Instantiate(_laserPrefab, frontOfShip, Quaternion.identity);
@@ -276,7 +283,7 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        
+
         _playerHealth++;
 
         _uiManager.UpdateLivesImage(_playerHealth);
@@ -297,6 +304,12 @@ public class Player : MonoBehaviour
         _shotCountText.text = $"Shots: {_shotCount}";
     }
 
+    public void ActivateCircularShot()
+    {
+        _circularShotActive = true;
+        StartCoroutine(nameof(DeactivateCircularShot));
+    }
+
 #endregion
 
 #region Coroutines
@@ -311,6 +324,12 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         _isSpeedBoosted = false;
+    }
+
+    IEnumerator DeactivateCircularShot()
+    {
+        yield return new WaitForSeconds(5f);
+        _circularShotActive = false;
     }
 
 #endregion

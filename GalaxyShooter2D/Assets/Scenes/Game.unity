@@ -367,6 +367,7 @@ MonoBehaviour:
   - {fileID: 7479855973841427564, guid: 20921033fb4750b46a4d0543f225ccbb, type: 3}
   - {fileID: 923364581824119045, guid: 96e19975407ea274f93be96abad6aa43, type: 3}
   - {fileID: 6937512988538326012, guid: a5addfea20d26184bb58b86462f030ef, type: 3}
+  - {fileID: 7701364692806106556, guid: e3db3c88c1dc6c94f8a63d0fa8add9ab, type: 3}
 --- !u!4 &288562705
 Transform:
   m_ObjectHideFlags: 0
@@ -1528,6 +1529,8 @@ MonoBehaviour:
   thrusterSpeed: 7
   thrustAndBoost: 12
   _shotCountText: {fileID: 2070254595}
+  _circularShotPrefab: {fileID: 4360322237113232462, guid: 9ab6a0b5520d9f14b9faf797218f11de,
+    type: 3}
 --- !u!212 &1663380371
 SpriteRenderer:
   m_ObjectHideFlags: 0
