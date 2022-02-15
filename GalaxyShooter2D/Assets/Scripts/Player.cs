@@ -231,7 +231,7 @@ public class Player : MonoBehaviour
             break;
         }
     }
-
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag.Equals("EnemyLaser"))
@@ -267,6 +267,22 @@ public class Player : MonoBehaviour
         _shieldVisualizer.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
         _shieldStrength = 3;
         _shieldVisualizer.gameObject.SetActive(true);
+    }
+
+    public void ActivateHealthPowerup()
+    {
+        _playerHealth++;
+
+        _uiManager.UpdateLivesImage(_playerHealth);
+
+        if (_engineDamage[0].gameObject.activeInHierarchy)
+        {
+            _engineDamage[0].gameObject.SetActive(false);
+        }
+        else if (_engineDamage[1].gameObject.activeInHierarchy)
+        {
+            _engineDamage[1].gameObject.SetActive(false);
+        }
     }
 
 #endregion

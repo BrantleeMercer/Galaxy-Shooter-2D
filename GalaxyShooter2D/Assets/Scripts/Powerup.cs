@@ -34,6 +34,10 @@ public class Powerup : MonoBehaviour
                         player.ActivateShields();
                     break;   
 
+                    case 3: // 3 = Health
+                        player.ActivateHealthPowerup();
+                    break; 
+
                     default:
                         Debug.LogError("Powerup Not Accounted For");
                     break;                 
