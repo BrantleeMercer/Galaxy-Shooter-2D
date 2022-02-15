@@ -19,10 +19,14 @@ public class Player : MonoBehaviour
     [SerializeField] private float thrustAndBoost = 12f;
     [SerializeField] private Text _shotCountText;
     [SerializeField] private GameObject _circularShotPrefab;
+    [SerializeField] private Image _thrusterChargeBar;
     private bool _isThrusterActive = false;
     private int _shieldStrength = 0;
     private int _shotCount = 15;
     private bool _circularShotActive = false;
+    private float _maxCharge = 3f;
+    private float _rateBeforeRecharge = 2f;
+    private float _canRecharge = -1;
     
 
     void Start()
@@ -53,17 +57,7 @@ public class Player : MonoBehaviour
         {
             FireLaser();
         }
-
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            _isThrusterActive = true;
-        }
-        else
-        {
-            _isThrusterActive = false;
-        }
     }
-
 
     private void CalculateMovement()
     {
@@ -71,6 +65,27 @@ public class Player : MonoBehaviour
         float userInputVert = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(userInputHorz, userInputVert, 0);
+
+        if (Input.GetKey(KeyCode.LeftShift) && _thrusterChargeBar.fillAmount != 0)
+        {
+            _isThrusterActive = true;
+
+            if (_thrusterChargeBar.fillAmount > 0)
+            {
+                _thrusterChargeBar.fillAmount -= 1f /_maxCharge * Time.deltaTime;
+                _canRecharge = Time.time + _rateBeforeRecharge;
+            }            
+        }
+        else
+        {
+            _isThrusterActive = false;
+
+            if(_thrusterChargeBar.fillAmount < 1 && Time.time > _canRecharge)
+            {
+                _thrusterChargeBar.fillAmount += 1f /_maxCharge * Time.deltaTime;
+            }
+            
+        }
 
         int boost = BoostSpeed(_isThrusterActive, _isSpeedBoosted);
 
@@ -208,6 +223,8 @@ public class Player : MonoBehaviour
 
         _playerHealth -= damage;
 
+        //TODO: shake camera
+
         _uiManager.UpdateLivesImage(_playerHealth);
 
         switch(_playerHealth)
@@ -241,7 +258,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag.Equals("EnemyLaser"))
+        if (other.tag.Equals("EnemyLaser"))
         {
             Destroy(other.gameObject);
             Damage(1);
