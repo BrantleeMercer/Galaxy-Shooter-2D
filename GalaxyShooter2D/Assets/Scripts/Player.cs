@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Text _shotCountText;
     [SerializeField] private GameObject _circularShotPrefab;
     [SerializeField] private Image _thrusterChargeBar;
+    [SerializeField] private Camera _mainCamera;
     private bool _isThrusterActive = false;
     private int _shieldStrength = 0;
     private int _shotCount = 15;
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour
     private float _maxCharge = 3f;
     private float _rateBeforeRecharge = 2f;
     private float _canRecharge = -1;
+    private float _cameraShakeTime = .5f;
     
 
     void Start()
@@ -223,7 +225,7 @@ public class Player : MonoBehaviour
 
         _playerHealth -= damage;
 
-        //TODO: shake camera
+        StartCoroutine(nameof(ShakeCameraRoutine));
 
         _uiManager.UpdateLivesImage(_playerHealth);
 
@@ -295,7 +297,6 @@ public class Player : MonoBehaviour
 
     public void ActivateHealthPowerup()
     {
-        /*Found bug while testing Refill powerup*/
         if (_playerHealth >= 3)
         {
             return;
@@ -347,6 +348,22 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         _circularShotActive = false;
+    }
+
+    IEnumerator ShakeCameraRoutine()
+    {
+        float timeLeft = _cameraShakeTime;
+        float cameraXPos = 0.02f;
+        while(timeLeft > 0)
+        {
+            _mainCamera.transform.position = new Vector3(cameraXPos, _mainCamera.transform.position.y, _mainCamera.transform.position.z);
+            yield return new WaitForSeconds(0.02f);
+            cameraXPos *= -1;
+            timeLeft -= Time.deltaTime;
+        }
+
+        _mainCamera.transform.position = new Vector3(0f, _mainCamera.transform.position.y, _mainCamera.transform.position.z);
+
     }
 
 #endregion

@@ -1682,6 +1682,7 @@ MonoBehaviour:
   _circularShotPrefab: {fileID: 4360322237113232462, guid: 9ab6a0b5520d9f14b9faf797218f11de,
     type: 3}
   _thrusterChargeBar: {fileID: 1270433444}
+  _mainCamera: {fileID: 2090531913}
 --- !u!212 &1663380371
 SpriteRenderer:
   m_ObjectHideFlags: 0
