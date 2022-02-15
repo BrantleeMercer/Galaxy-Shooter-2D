@@ -38,6 +38,10 @@ public class Powerup : MonoBehaviour
                         player.ActivateHealthPowerup();
                     break; 
 
+                    case 4: // 4 = Refill Ammo
+                        player.ActivateRefillPowerup();
+                    break; 
+
                     default:
                         Debug.LogError("Powerup Not Accounted For");
                     break;                 

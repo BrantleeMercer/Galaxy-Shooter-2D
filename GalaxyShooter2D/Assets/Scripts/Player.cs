@@ -231,7 +231,7 @@ public class Player : MonoBehaviour
             break;
         }
     }
-    
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag.Equals("EnemyLaser"))
@@ -271,6 +271,12 @@ public class Player : MonoBehaviour
 
     public void ActivateHealthPowerup()
     {
+        /*Found bug while testing Refill powerup*/
+        if (_playerHealth >= 3)
+        {
+            return;
+        }
+        
         _playerHealth++;
 
         _uiManager.UpdateLivesImage(_playerHealth);
@@ -283,6 +289,12 @@ public class Player : MonoBehaviour
         {
             _engineDamage[1].gameObject.SetActive(false);
         }
+    }
+
+    public void ActivateRefillPowerup()
+    {
+        _shotCount = 15;
+        _shotCountText.text = $"Shots: {_shotCount}";
     }
 
 #endregion
