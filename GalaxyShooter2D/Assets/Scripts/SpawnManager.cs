@@ -10,19 +10,48 @@ public class SpawnManager : MonoBehaviour
     
     public void StartSpawning()
     {
-        StartCoroutine(nameof(SpawnEnemyRoutine)); 
+        StartCoroutine(nameof(SpawnBasicEnemyRoutine));
+        StartCoroutine(nameof(SpawnHorzEnemyRoutine));
         StartCoroutine(nameof(SpawnPowerupRoutine));
     }
 
-    IEnumerator SpawnEnemyRoutine()
+    IEnumerator SpawnBasicEnemyRoutine()
     {
         yield return new WaitForSeconds(3f);
         
         while (_stopSpawning == false)
-        {
+        {            
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
 
             GameObject spawnedEnemy = Instantiate(_enemyPrefab, randomSpawnLocation, Quaternion.identity);
+            Enemy enemy = spawnedEnemy.GetComponent<Enemy>();
+
+            if(enemy != null)
+            {
+                enemy.SetEnemyID(0);
+            }
+
+            spawnedEnemy.transform.parent = _enemyContainer.transform;
+
+            yield return new WaitForSeconds(5f);
+        }
+    }
+
+    IEnumerator SpawnHorzEnemyRoutine()
+    {
+        yield return new WaitForSeconds(4f);
+        
+        while (_stopSpawning == false) 
+        {            
+            Vector3 randomSpawnLocation = new Vector3(9.4f, Random.Range(2.5f,5.3f), 0);
+
+            GameObject spawnedEnemy = Instantiate(_enemyPrefab, randomSpawnLocation, Quaternion.identity);
+            Enemy enemy = spawnedEnemy.GetComponent<Enemy>();
+
+            if (enemy != null)
+            {
+                enemy.SetEnemyID(1);
+            }
 
             spawnedEnemy.transform.parent = _enemyContainer.transform;
 

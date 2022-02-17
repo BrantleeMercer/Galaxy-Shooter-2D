@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     private float _rateOfFire = 3f;
     private float _canFire = -1;
     private bool _isAlive = true;
+    private int _id;
 
     
    private void Start() 
@@ -30,7 +31,7 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-       SpawnEnemy();
+       EnemyMovement();
 
        if((Time.time > _canFire) && _isAlive)
        {
@@ -39,16 +40,30 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void SpawnEnemy()
+    private void EnemyMovement()
     {
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
-        
-        if (transform.position.y < -5.4f)
+        if (_id == 0)
         {
-            float randX = Random.Range(-9.4f, 9.4f);
-            
-            transform.position = new Vector3(randX, 7.3f, 0);
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        
+            if (transform.position.y < -5.4f)
+            {
+                float randX = Random.Range(-9.4f, 9.4f);
+                transform.position = new Vector3(randX, 7.3f, 0);
+            }
         }
+
+        if (_id == 1)
+        {
+            transform.Translate(Vector3.left * _speed * Time.deltaTime);
+        
+            if (transform.position.x < -9.4f)
+            {
+                float randY = Random.Range(2.5f,5.3f);
+                transform.position = new Vector3(9.4f, randY, 0);
+            }
+        }
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other) 
@@ -92,5 +107,10 @@ public class Enemy : MonoBehaviour
         _rateOfFire = Random.Range(3f,7f);
         _canFire = Time.time + _rateOfFire;
         GameObject lasers = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+    }
+
+    public void SetEnemyID(int id)
+    {
+        _id = id;
     }
 }
