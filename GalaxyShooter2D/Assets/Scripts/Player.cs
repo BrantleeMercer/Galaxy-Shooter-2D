@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     private float _rateBeforeRecharge = 2f;
     private float _canRecharge = -1;
     private float _cameraShakeTime = .5f;
+    private const int _MAXSHOTCOUNT = 15;
     
 
     void Start()
@@ -47,7 +48,7 @@ public class Player : MonoBehaviour
         }
         
         _shieldVisualizer = transform.GetChild(0);
-        _shotCountText.text = $"Shots: {_shotCount}";
+        _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
     }
 
 
@@ -172,7 +173,7 @@ public class Player : MonoBehaviour
         }
 
         _shotCount--;
-        _shotCountText.text = $"Shots: {_shotCount}";
+        _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
 
         _canFire = Time.time + _rateOfFire;
         Vector3 frontOfShip = new Vector3(transform.position.x, transform.position.y + 1.05f, transform.position.z);
@@ -319,7 +320,7 @@ public class Player : MonoBehaviour
     public void ActivateRefillPowerup()
     {
         _shotCount = 15;
-        _shotCountText.text = $"Shots: {_shotCount}";
+        _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
     }
 
     public void ActivateCircularShot()
