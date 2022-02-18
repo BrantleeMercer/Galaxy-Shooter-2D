@@ -4,22 +4,90 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
+
+#region Serialize Fields
+
     [SerializeField] private GameObject _enemyPrefab, _enemyContainer;
     [SerializeField] private GameObject[] _listOfPowerups;
-    private bool _stopSpawning = false;
-    
+
+#endregion
+
+
+#region Private Variables
+
+    private bool _stopSpawningEnemies = false;
+    private bool _stopSpawningPowerups = false;
+    private int _currentEnemysDefeated;
+    private int _maxEnemiesInWave = 3;  
+    private int _totalEnemiesSpawned;  
+
+#endregion
+
+
+#region Unity Methods
+
+ private void Update() 
+    {
+        if (_totalEnemiesSpawned >= _maxEnemiesInWave)
+        {
+            SetStopSpawingEnemies(true);
+        }
+
+        if (_currentEnemysDefeated == _maxEnemiesInWave)
+        {
+            GameManager.instance.StartNewWave();
+            _currentEnemysDefeated = 0;
+            _totalEnemiesSpawned = 0;
+            _maxEnemiesInWave += 3;
+
+        }
+    }
+
+#endregion
+
+
+#region Public Methods
+
     public void StartSpawning()
     {
         StartCoroutine(nameof(SpawnBasicEnemyRoutine));
         StartCoroutine(nameof(SpawnHorzEnemyRoutine));
-        StartCoroutine(nameof(SpawnPowerupRoutine));
+
+        if (GameManager.instance.GetWaveIndex() == 1)
+        {
+            StartCoroutine(nameof(SpawnPowerupRoutine));
+        }
+        
     }
+
+    public void SetStopSpawingEnemies(bool stopSpawn)
+    {
+        _stopSpawningEnemies = stopSpawn;
+    }
+
+    public void SetStopSpawingPowerups(bool stopSpawn)
+    {
+        _stopSpawningPowerups = stopSpawn;
+    }
+
+    public void IncrementEnemyDeath()
+    {
+        _currentEnemysDefeated++;
+    }
+
+#endregion
+
+
+#region Coroutines
 
     IEnumerator SpawnBasicEnemyRoutine()
     {
-        yield return new WaitForSeconds(3f);
+        float randomSeconds = Random.Range(3f, 5f);
+        yield return new WaitForSeconds(randomSeconds);
         
-        while (_stopSpawning == false)
+        randomSeconds = Random.Range(3f, 5f);
+
+        while (_stopSpawningEnemies == false)
         {            
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
 
@@ -33,15 +101,19 @@ public class SpawnManager : MonoBehaviour
 
             spawnedEnemy.transform.parent = _enemyContainer.transform;
 
+            _totalEnemiesSpawned++;
             yield return new WaitForSeconds(5f);
         }
     }
 
     IEnumerator SpawnHorzEnemyRoutine()
     {
-        yield return new WaitForSeconds(4f);
+        float randomSeconds = Random.Range(3f, 5f);
+        yield return new WaitForSeconds(randomSeconds);
+
+        randomSeconds = Random.Range(3f, 5f);
         
-        while (_stopSpawning == false) 
+        while (_stopSpawningEnemies == false) 
         {            
             Vector3 randomSpawnLocation = new Vector3(9.4f, Random.Range(2.5f,5.3f), 0);
 
@@ -55,13 +127,14 @@ public class SpawnManager : MonoBehaviour
 
             spawnedEnemy.transform.parent = _enemyContainer.transform;
 
+            _totalEnemiesSpawned++;
             yield return new WaitForSeconds(5f);
         }
     }
 
     IEnumerator SpawnPowerupRoutine()
     {
-        while (_stopSpawning == false)
+        while (_stopSpawningPowerups == false)
         {
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
 
@@ -83,8 +156,6 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    public void SetStopSpawing()
-    {
-        _stopSpawning = true;
-    }
+#endregion
+    
 }

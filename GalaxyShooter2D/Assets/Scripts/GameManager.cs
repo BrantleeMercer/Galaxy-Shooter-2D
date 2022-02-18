@@ -5,8 +5,31 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+
+#region Serialize Fields
+
+   [SerializeField] private GameObject _asteroidPrefab;
+
+#endregion
+
+
+#region Public Variables
+
+ public static GameManager instance;
+
+#endregion
+
+
+#region Private Variables
+
     private bool _isGameOver = false;
+    private int _waveIndex;
+    private Player _player;
+
+#endregion
+
+
+#region Unity Methods
 
     private void Awake() 
     {
@@ -24,7 +47,11 @@ public class GameManager : MonoBehaviour
 
     private void Start() 
     {
-        
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("_player :: GameManager == null");
+        }
     }
 
     void Update()
@@ -40,8 +67,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+#endregion
+
+
+#region Public Methods
+
     public void SetGameOver(bool isGameOver)
     {
         _isGameOver = isGameOver;
     }
+
+    public void StartNewWave()
+    {
+        Instantiate(_asteroidPrefab, _asteroidPrefab.transform.position, Quaternion.identity);
+        _player.ResetShotCount();
+        _waveIndex++;
+    }
+
+    public int GetWaveIndex()
+    {
+        return _waveIndex;
+    }
+
+#endregion
+
 }

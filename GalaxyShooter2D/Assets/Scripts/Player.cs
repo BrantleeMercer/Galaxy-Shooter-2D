@@ -5,22 +5,25 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+
+#region Serialize Fields
+
     [SerializeField] private GameObject _laserPrefab, _tripleShotPrefab;
     [SerializeField] private GameObject[] _engineDamage;
     [SerializeField] private float _rateOfFire = 0.5f, _speed = 5f, _boostedSpeed = 9f;
     [SerializeField] private int _playerHealth = 3, _score = 0;
-    private float _canFire = -1f;
-    private SpawnManager _spawnManager;
-    private UIManager _uiManager;
-    private bool _tripleShotActive = false, _isSpeedBoosted = false, _isShieldActive = false;
-    private Transform _shieldVisualizer;
-
     [SerializeField] private float thrusterSpeed = 7f;
     [SerializeField] private float thrustAndBoost = 12f;
     [SerializeField] private Text _shotCountText;
     [SerializeField] private GameObject _circularShotPrefab;
     [SerializeField] private Image _thrusterChargeBar;
     [SerializeField] private Camera _mainCamera;
+    
+#endregion
+
+
+#region Private Variables
+
     private bool _isThrusterActive = false;
     private int _shieldStrength = 0;
     private int _shotCount = 15;
@@ -30,9 +33,18 @@ public class Player : MonoBehaviour
     private float _canRecharge = -1;
     private float _cameraShakeTime = .5f;
     private const int _MAXSHOTCOUNT = 15;
+    private float _canFire = -1f;
+    private SpawnManager _spawnManager;
+    private UIManager _uiManager;
+    private bool _tripleShotActive = false, _isSpeedBoosted = false, _isShieldActive = false;
+    private Transform _shieldVisualizer;
     
+#endregion
 
-    void Start()
+
+#region Unity Methods
+
+    private void Start()
     {
         transform.position = new Vector3(0,0,0);
         _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
@@ -51,8 +63,7 @@ public class Player : MonoBehaviour
         _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
     }
 
-
-    void Update()
+    private void Update()
     {
         CalculateMovement();
         
@@ -62,6 +73,10 @@ public class Player : MonoBehaviour
         }
     }
 
+#endregion
+
+
+#region Private Methods
     private void CalculateMovement()
     {
         float userInputHorz = Input.GetAxis("Horizontal");
@@ -194,6 +209,26 @@ public class Player : MonoBehaviour
         }       
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag.Equals("EnemyLaser"))
+        {
+            Destroy(other.gameObject);
+            Damage(1);
+        }
+    }
+
+#endregion
+
+
+#region Public Methods
+
+    public void AddToScore(int scoreValue)
+    {
+        _score += scoreValue;
+        _uiManager.UpdateScoreText(_score);
+    }
+
     public void Damage(int damage)
     {
         if(_isShieldActive)
@@ -249,7 +284,8 @@ public class Player : MonoBehaviour
             break;
 
             case 0:
-                _spawnManager.SetStopSpawing();
+                _spawnManager.SetStopSpawingEnemies(true);
+                _spawnManager.SetStopSpawingPowerups(true);
                 Destroy(gameObject);
             break;
 
@@ -259,20 +295,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void ResetShotCount()
     {
-        if (other.tag.Equals("EnemyLaser"))
-        {
-            Destroy(other.gameObject);
-            Damage(1);
-        }
+        _shotCount = _MAXSHOTCOUNT;
+        _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
     }
 
-    public void AddToScore(int scoreValue)
-    {
-        _score += scoreValue;
-        _uiManager.UpdateScoreText(_score);
-    }
+#endregion
+
 
 #region Activate Powerups
 
@@ -330,6 +360,7 @@ public class Player : MonoBehaviour
     }
 
 #endregion
+
 
 #region Coroutines
 
