@@ -359,6 +359,21 @@ public class Player : MonoBehaviour
         StartCoroutine(nameof(DeactivateCircularShot));
     }
 
+
+/************** Negative Effects ***************/
+
+    public void ActivateReduceAmmo()
+    {
+        _shotCount -= 5;
+
+        if(_shotCount < 0)
+        {
+            _shotCount = 0;
+        }
+
+         _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
+    }
+
 #endregion
 
 

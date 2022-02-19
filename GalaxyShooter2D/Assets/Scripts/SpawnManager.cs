@@ -8,7 +8,7 @@ public class SpawnManager : MonoBehaviour
 #region Serialize Fields
 
     [SerializeField] private GameObject _enemyPrefab, _enemyContainer;
-    [SerializeField] private GameObject[] _listOfPowerups;
+    [SerializeField] private GameObject[] _listOfPowerups, _listOfNegativePowerups;
 
 #endregion
 
@@ -56,6 +56,7 @@ public class SpawnManager : MonoBehaviour
         if (GameManager.instance.GetWaveIndex() == 1)
         {
             StartCoroutine(nameof(SpawnPowerupRoutine));
+            StartCoroutine(nameof(SpawnNegativePowerupRoutine));
         }
         
     }
@@ -153,6 +154,20 @@ public class SpawnManager : MonoBehaviour
             GameObject spawnedPowerup = Instantiate(nextPowerup, randomSpawnLocation, Quaternion.identity);
 
             yield return new WaitForSeconds(Random.Range(3f, 7f));
+        }
+    }
+
+    IEnumerator SpawnNegativePowerupRoutine()
+    {
+        while (_stopSpawningPowerups == false)
+        {
+            Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
+
+            GameObject nextNegativePowerup = _listOfNegativePowerups[Random.Range(0, _listOfNegativePowerups.Length)];
+
+            GameObject spawnedPowerup = Instantiate(nextNegativePowerup, randomSpawnLocation, Quaternion.identity);
+
+            yield return new WaitForSeconds(Random.Range(5f, 10f));
         }
     }
 
