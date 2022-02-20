@@ -18,7 +18,7 @@ public class SpawnManager : MonoBehaviour
 
     private bool _stopSpawningEnemies = false;
     private bool _stopSpawningPowerups = false;
-    private int _currentEnemysDefeated;
+    private int _currentEnemiesDefeated;
     private int _maxEnemiesInWave;  
     private int _totalEnemiesSpawned;
 
@@ -30,7 +30,7 @@ public class SpawnManager : MonoBehaviour
     private void Start()
     {
         _maxEnemiesInWave = 3;
-        _currentEnemysDefeated = 0;
+        _currentEnemiesDefeated = 0;
     }
 
     private void Update() 
@@ -43,14 +43,13 @@ public class SpawnManager : MonoBehaviour
 
     private void FixedUpdate() 
     {
-        if (_currentEnemysDefeated == _maxEnemiesInWave)
+        if (_currentEnemiesDefeated == _maxEnemiesInWave)
         {
             SetStopSpawingPowerups(true);
-            _currentEnemysDefeated = 0;
+            _currentEnemiesDefeated = 0;
             _totalEnemiesSpawned = 0;
             _maxEnemiesInWave += 3;
             GameManager.instance.StartNewWave();
-
         }
     }
 
@@ -64,7 +63,7 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnBasicEnemyRoutine());
         StartCoroutine(SpawnHorzEnemyRoutine());
 
-        if (GameManager.instance.GetWaveIndex() == 1)
+        if (GameManager.instance.GetWaveIndex() >= 1)
         {
             StartCoroutine(SpawnPowerupRoutine());
             StartCoroutine(SpawnNegativePowerupRoutine());
@@ -89,7 +88,7 @@ public class SpawnManager : MonoBehaviour
 
     public void IncrementEnemyDeath()
     {
-        _currentEnemysDefeated++;
+        _currentEnemiesDefeated++;
     }
 
 #endregion
@@ -99,7 +98,7 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnBasicEnemyRoutine()
     {
-        yield return new WaitForSeconds(Random.Range(3f, 5f));        
+        yield return new WaitForSeconds(3f);        
 
         while (_stopSpawningEnemies == false)
         {            
@@ -122,7 +121,7 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnHorzEnemyRoutine()
     {
-        yield return new WaitForSeconds(Random.Range(4f, 6f));
+        yield return new WaitForSeconds(4f);
         
         while (_stopSpawningEnemies == false) 
         {            
@@ -145,7 +144,7 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnEnemyCanonRoutine()
     {
-        yield return new WaitForSeconds(Random.Range(6f, 8f));
+        yield return new WaitForSeconds(6f);
 
         while (_stopSpawningEnemies == false) 
         {
@@ -162,8 +161,8 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnPowerupRoutine()
     {
+        
         yield return new WaitForSeconds(Random.Range(3f, 5f));
-
         while (_stopSpawningPowerups == false)
         {
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
@@ -181,8 +180,7 @@ public class SpawnManager : MonoBehaviour
                 nextPowerup = _listOfPowerupsCommon[Random.Range(0, _listOfPowerupsCommon.Length)];
             }
 
-            GameObject spawnedPowerup = Instantiate(nextPowerup, randomSpawnLocation, Quaternion.identity);
-
+            Instantiate(nextPowerup, randomSpawnLocation, Quaternion.identity);
             yield return new WaitForSeconds(Random.Range(3f, 5f));
         }
     }
@@ -197,7 +195,7 @@ public class SpawnManager : MonoBehaviour
 
             GameObject nextNegativePowerup = _listOfNegativePowerups[Random.Range(0, _listOfNegativePowerups.Length)];
 
-            GameObject spawnedPowerup = Instantiate(nextNegativePowerup, randomSpawnLocation, Quaternion.identity);
+            Instantiate(nextNegativePowerup, randomSpawnLocation, Quaternion.identity);
 
             yield return new WaitForSeconds(Random.Range(7f, 10f));
         }
