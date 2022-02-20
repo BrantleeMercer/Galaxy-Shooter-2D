@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
 #region Serialize Fields
 
     [SerializeField] private float _speed = 4f, _ramSpeed = 5f;
-    [SerializeField] private GameObject _laserPrefab;
+    [SerializeField] private GameObject _laserPrefab, _backLaserPrefab;
 
 #endregion
 
@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
     private bool _isAlive = true;
     private int _id;
     private bool _isShieldActive = false;
+    private bool _isBehindPlayer = false;
 
 #endregion
 
@@ -74,7 +75,6 @@ public class Enemy : MonoBehaviour
        {
            FireEnemyLaser();
        }
-
     }
 
     private void OnTriggerEnter2D(Collider2D other) 
@@ -109,6 +109,15 @@ public class Enemy : MonoBehaviour
 
     private void EnemyMovement()
     {
+        if (transform.position.y < _player.transform.position.y)
+        {
+            _isBehindPlayer = true;
+        }
+        else 
+        {
+            _isBehindPlayer = false;
+        }
+
         if (_id == 0 && _isAlive)
         {
             transform.Translate(Vector3.down * _speed * Time.deltaTime);
@@ -119,8 +128,10 @@ public class Enemy : MonoBehaviour
                 transform.position = new Vector3(randX, 7.3f, 0);
             }
 
-            RamPlayer();
-
+            if (!_isBehindPlayer)
+            {
+                RamPlayer();
+            }
         }
 
         if (_id == 1 && _isAlive)
@@ -134,6 +145,16 @@ public class Enemy : MonoBehaviour
             }
         }
         
+    }
+
+     private void RamPlayer()
+    {
+        float distanceBetweenPlayer = Vector3.Distance(transform.position, _player.transform.position);
+
+        if (distanceBetweenPlayer < 3f && !_isShieldActive)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _ramSpeed * Time.deltaTime);
+        }
     }
 
     private void PlayDeathAnimation()
@@ -164,7 +185,22 @@ public class Enemy : MonoBehaviour
     {
         _rateOfFire = Random.Range(3f,7f);
         _canFire = Time.time + _rateOfFire;
-        GameObject lasers = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+        if (!_isBehindPlayer)
+        {
+            Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+        }
+        else 
+        {
+            Instantiate(_backLaserPrefab, transform.position, Quaternion.identity);
+        }
+        
+    }
+
+    private RaycastHit2D ShootRayCast(float direction)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - direction), Vector2.down);
+
+        return hit;
     }
 
 #endregion
@@ -175,16 +211,6 @@ public class Enemy : MonoBehaviour
     public void SetEnemyID(int id)
     {
         _id = id;
-    }
-
-    public void RamPlayer()
-    {
-        float distanceBetweenPlayer = Vector3.Distance(transform.position, _player.transform.position);
-
-        if (distanceBetweenPlayer < 3f && !_isShieldActive)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _ramSpeed * Time.deltaTime);
-        }
     }
 
 #endregion
