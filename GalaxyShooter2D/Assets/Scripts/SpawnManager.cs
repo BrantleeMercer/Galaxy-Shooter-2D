@@ -7,7 +7,7 @@ public class SpawnManager : MonoBehaviour
 
 #region Serialize Fields
 
-    [SerializeField] private GameObject _enemyPrefab, _enemyContainer;
+    [SerializeField] private GameObject _enemyCanonPrefab, _enemyPrefab, _enemyContainer;
     [SerializeField] private GameObject[] _listOfPowerups, _listOfNegativePowerups;
 
 #endregion
@@ -28,7 +28,7 @@ public class SpawnManager : MonoBehaviour
 
  private void Update() 
     {
-        if (_totalEnemiesSpawned >= _maxEnemiesInWave)
+        if (_totalEnemiesSpawned == _maxEnemiesInWave)
         {
             SetStopSpawingEnemies(true);
         }
@@ -57,6 +57,11 @@ public class SpawnManager : MonoBehaviour
         {
             StartCoroutine(nameof(SpawnPowerupRoutine));
             StartCoroutine(nameof(SpawnNegativePowerupRoutine));
+        }
+
+        if (GameManager.instance.GetWaveIndex() >= 2)
+        {
+            StartCoroutine(nameof(SpawnEnemyCanonRoutine));
         }
         
     }
@@ -130,6 +135,24 @@ public class SpawnManager : MonoBehaviour
 
             _totalEnemiesSpawned++;
             yield return new WaitForSeconds(5f);
+        }
+    }
+
+    IEnumerator SpawnEnemyCanonRoutine()
+    {
+        float randomSeconds = Random.Range(5f, 10f);
+        yield return new WaitForSeconds(randomSeconds);
+
+        randomSeconds = Random.Range(5f, 10f);
+        
+        while (_stopSpawningEnemies == false) 
+        {
+            GameObject spawnedEnemyCanon = Instantiate(_enemyCanonPrefab, new Vector3(0f, 8f, 0), _enemyCanonPrefab.transform.rotation);
+
+            spawnedEnemyCanon.transform.parent = _enemyContainer.transform;
+
+            _totalEnemiesSpawned++;
+            yield return new WaitForSeconds(randomSeconds);
         }
     }
 

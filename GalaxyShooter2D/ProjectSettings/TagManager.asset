@@ -11,6 +11,7 @@ TagManager:
   - ShieldAnimation
   - EnemyLaser
   - NegativePowerup
+  - LaserBeam
   layers:
   - Default
   - TransparentFX

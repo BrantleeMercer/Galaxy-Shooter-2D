@@ -216,6 +216,11 @@ public class Player : MonoBehaviour
             Destroy(other.gameObject);
             Damage(1);
         }
+
+        if (other.tag.Equals("LaserBeam"))
+        {
+            Damage(1);
+        }
     }
 
 #endregion
