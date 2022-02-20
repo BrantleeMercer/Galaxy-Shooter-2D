@@ -18,10 +18,12 @@ public class Enemy : MonoBehaviour
     private Animator _enemyDeathAnim;
     private Player _player;
     private SpawnManager _spawnManager;
+    private Transform _enemyShield;
     private float _rateOfFire = 3f;
     private float _canFire = -1;
     private bool _isAlive = true;
     private int _id;
+    private bool _isShieldActive = false;
 
 #endregion
 
@@ -48,13 +50,26 @@ public class Enemy : MonoBehaviour
            Debug.LogError("_spawnManager :: Enemy == null");
        }
 
+       _enemyShield = transform.GetChild(0);
+
+       float chanceForShield = Random.value;
+
+       if (chanceForShield <= .3f)
+       {
+           _isShieldActive = true;
+           Debug.Log($"Enemy Shield: {_enemyShield}");
+           _enemyShield.gameObject.SetActive(true);
+       }
+       Debug.Log($"Enemy chance for shield: {chanceForShield}");
+       Debug.Log($"Enemy shield is active: {_isShieldActive}");
+       
    }
 
     private void Update()
     {
        EnemyMovement();
 
-       if((Time.time > _canFire) && _isAlive)
+       if ((Time.time > _canFire) && _isAlive)
        {
            FireEnemyLaser();
        }
@@ -65,7 +80,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag.Equals("Player"))
         {
-            if(_player != null)
+            if (_player != null)
             {
                 _player.Damage(1);
             }
@@ -77,11 +92,11 @@ public class Enemy : MonoBehaviour
         {
             Destroy(other.gameObject);
             
-            if (_player != null)
+            if (_player != null && !_isShieldActive)
             {
                 _player.AddToScore(10);
             }
-            
+
             PlayDeathAnimation();
             
         }
@@ -119,16 +134,26 @@ public class Enemy : MonoBehaviour
 
     private void PlayDeathAnimation()
     {
-        _isAlive = false;
-        _speed = 0;
 
-        _enemyDeathAnim.SetTrigger("OnEnemyDeath");
-        AudioManager.instance.PlaySoundEffect("explosion");
+        if (_isShieldActive)
+        {
+            _isShieldActive = false;
+            _enemyShield.gameObject.SetActive(false);
+            return;
+        }
+        else
+        {
+            _isAlive = false;
+            _speed = 0;
 
-        _spawnManager.IncrementEnemyDeath();
+            _enemyDeathAnim.SetTrigger("OnEnemyDeath");
+            AudioManager.instance.PlaySoundEffect("explosion");
 
-        Destroy(GetComponent<Collider2D>());
-        Destroy(gameObject, 2.8f);
+            _spawnManager.IncrementEnemyDeath();
+
+            Destroy(GetComponent<Collider2D>());
+            Destroy(gameObject, 2.8f);
+        }
     }
 
     private void FireEnemyLaser()
