@@ -23,8 +23,7 @@ public class GameManager : MonoBehaviour
 #region Private Variables
 
     private bool _isGameOver = false;
-    private int _waveIndex;
-    private Player _player;
+    private int _waveIndex = 1;
 
 #endregion
 
@@ -33,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake() 
     {
-        if (instance)
+        if (instance != null)
         {
             Destroy(gameObject);
         }
@@ -45,19 +44,11 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
 
-    private void Start() 
-    {
-        _player = GameObject.Find("Player").GetComponent<Player>();
-        if (_player == null)
-        {
-            Debug.LogError("_player :: GameManager == null");
-        }
-    }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R) && _isGameOver)
         {
+            _waveIndex = 1;
             SceneManager.LoadScene(1); //Current game scene is scene 1
         }
 
@@ -80,8 +71,14 @@ public class GameManager : MonoBehaviour
 
     public void StartNewWave()
     {
+        Player player = GameObject.Find("Player").GetComponent<Player>();
+        if (player == null)
+        {
+            Debug.LogError("_player :: GameManager == null");
+        }
+
         Instantiate(_asteroidPrefab, _asteroidPrefab.transform.position, Quaternion.identity);
-        _player.ResetShotCount();
+        player.ResetShotCount();
         _waveIndex++;
     }
 

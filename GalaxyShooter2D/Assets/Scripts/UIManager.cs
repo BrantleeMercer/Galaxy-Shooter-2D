@@ -16,13 +16,14 @@ public class UIManager : MonoBehaviour
         _scoreText.text = _scoreString + 0;
         _gameOverText.gameObject.SetActive(false);
     }
-    void Update()
-    {
-       
-    }
 
     public void UpdateLivesImage(int currentHealth)
     {
+        if(currentHealth < 0)
+        {
+            currentHealth = 0;
+        }
+
         _livesImage.sprite = _livesSprites[currentHealth];
 
         if(currentHealth <= 0)

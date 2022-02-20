@@ -8,7 +8,8 @@ public class SpawnManager : MonoBehaviour
 #region Serialize Fields
 
     [SerializeField] private GameObject _enemyCanonPrefab, _enemyPrefab, _enemyContainer;
-    [SerializeField] private GameObject[] _listOfPowerups, _listOfNegativePowerups;
+    [SerializeField] private GameObject[] _listOfNegativePowerups;
+    [SerializeField] private GameObject[] _listOfPowerupsRare, _listOfPowerupsCommon;
 
 #endregion
 
@@ -18,27 +19,37 @@ public class SpawnManager : MonoBehaviour
     private bool _stopSpawningEnemies = false;
     private bool _stopSpawningPowerups = false;
     private int _currentEnemysDefeated;
-    private int _maxEnemiesInWave = 3;  
-    private int _totalEnemiesSpawned;  
+    private int _maxEnemiesInWave;  
+    private int _totalEnemiesSpawned;
 
 #endregion
 
 
 #region Unity Methods
 
- private void Update() 
+    private void Start()
+    {
+        _maxEnemiesInWave = 3;
+        _currentEnemysDefeated = 0;
+    }
+
+    private void Update() 
     {
         if (_totalEnemiesSpawned == _maxEnemiesInWave)
         {
             SetStopSpawingEnemies(true);
         }
+    }
 
+    private void FixedUpdate() 
+    {
         if (_currentEnemysDefeated == _maxEnemiesInWave)
         {
-            GameManager.instance.StartNewWave();
+            SetStopSpawingPowerups(true);
             _currentEnemysDefeated = 0;
             _totalEnemiesSpawned = 0;
             _maxEnemiesInWave += 3;
+            GameManager.instance.StartNewWave();
 
         }
     }
@@ -50,18 +61,18 @@ public class SpawnManager : MonoBehaviour
 
     public void StartSpawning()
     {
-        StartCoroutine(nameof(SpawnBasicEnemyRoutine));
-        StartCoroutine(nameof(SpawnHorzEnemyRoutine));
+        StartCoroutine(SpawnBasicEnemyRoutine());
+        StartCoroutine(SpawnHorzEnemyRoutine());
 
         if (GameManager.instance.GetWaveIndex() == 1)
         {
-            StartCoroutine(nameof(SpawnPowerupRoutine));
-            StartCoroutine(nameof(SpawnNegativePowerupRoutine));
+            StartCoroutine(SpawnPowerupRoutine());
+            StartCoroutine(SpawnNegativePowerupRoutine());
         }
 
         if (GameManager.instance.GetWaveIndex() >= 2)
         {
-            StartCoroutine(nameof(SpawnEnemyCanonRoutine));
+            StartCoroutine(SpawnEnemyCanonRoutine());
         }
         
     }
@@ -88,10 +99,7 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnBasicEnemyRoutine()
     {
-        float randomSeconds = Random.Range(3f, 5f);
-        yield return new WaitForSeconds(randomSeconds);
-        
-        randomSeconds = Random.Range(3f, 5f);
+        yield return new WaitForSeconds(Random.Range(3f, 5f));        
 
         while (_stopSpawningEnemies == false)
         {            
@@ -108,16 +116,13 @@ public class SpawnManager : MonoBehaviour
             spawnedEnemy.transform.parent = _enemyContainer.transform;
 
             _totalEnemiesSpawned++;
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(Random.Range(3f, 5f));
         }
     }
 
     IEnumerator SpawnHorzEnemyRoutine()
     {
-        float randomSeconds = Random.Range(3f, 5f);
-        yield return new WaitForSeconds(randomSeconds);
-
-        randomSeconds = Random.Range(3f, 5f);
+        yield return new WaitForSeconds(Random.Range(4f, 6f));
         
         while (_stopSpawningEnemies == false) 
         {            
@@ -134,54 +139,58 @@ public class SpawnManager : MonoBehaviour
             spawnedEnemy.transform.parent = _enemyContainer.transform;
 
             _totalEnemiesSpawned++;
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(Random.Range(4f, 6f));
         }
     }
 
     IEnumerator SpawnEnemyCanonRoutine()
     {
-        float randomSeconds = Random.Range(5f, 10f);
-        yield return new WaitForSeconds(randomSeconds);
+        yield return new WaitForSeconds(Random.Range(6f, 8f));
 
-        randomSeconds = Random.Range(5f, 10f);
-        
         while (_stopSpawningEnemies == false) 
         {
-            GameObject spawnedEnemyCanon = Instantiate(_enemyCanonPrefab, new Vector3(0f, 8f, 0), _enemyCanonPrefab.transform.rotation);
+             Vector3 randomSpawnLocation = new Vector3(Random.Range(-8f, 8f), 7.3f, 0);
+
+            GameObject spawnedEnemyCanon = Instantiate(_enemyCanonPrefab, randomSpawnLocation, _enemyCanonPrefab.transform.rotation);
 
             spawnedEnemyCanon.transform.parent = _enemyContainer.transform;
 
             _totalEnemiesSpawned++;
-            yield return new WaitForSeconds(randomSeconds);
+            yield return new WaitForSeconds(Random.Range(6f, 8f));
         }
     }
 
     IEnumerator SpawnPowerupRoutine()
     {
+        yield return new WaitForSeconds(Random.Range(3f, 5f));
+
         while (_stopSpawningPowerups == false)
         {
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
 
-            GameObject nextPowerup = _listOfPowerups[Random.Range(0, _listOfPowerups.Length)];
+            GameObject nextPowerup;
 
-            if(nextPowerup == _listOfPowerups[_listOfPowerups.Length - 1]) //Make Circular shot rare, NEED TO KEEP CIRCULAR SHOT AS LAST POWERUP!
+           float chanceToSpawn = Random.value;
+
+            if (chanceToSpawn <= .1f)
             {
-                //Circular shot has 1 in however long the list is chance, and if it is selected, has a 50/50 chance of spawning
-                float chance = Random.value;
-                if(chance < .5f)
-                {
-                    nextPowerup = _listOfPowerups[Random.Range(0, _listOfPowerups.Length - 1)]; 
-                }
+                nextPowerup = _listOfPowerupsRare[Random.Range(0, _listOfPowerupsRare.Length)];
+            }
+            else
+            {
+                nextPowerup = _listOfPowerupsCommon[Random.Range(0, _listOfPowerupsCommon.Length)];
             }
 
             GameObject spawnedPowerup = Instantiate(nextPowerup, randomSpawnLocation, Quaternion.identity);
 
-            yield return new WaitForSeconds(Random.Range(3f, 7f));
+            yield return new WaitForSeconds(Random.Range(3f, 5f));
         }
     }
 
     IEnumerator SpawnNegativePowerupRoutine()
     {
+        yield return new WaitForSeconds(Random.Range(7f, 10f));
+
         while (_stopSpawningPowerups == false)
         {
             Vector3 randomSpawnLocation = new Vector3(Random.Range(-9.4f, 9.4f), 7.3f, 0);
@@ -190,7 +199,7 @@ public class SpawnManager : MonoBehaviour
 
             GameObject spawnedPowerup = Instantiate(nextNegativePowerup, randomSpawnLocation, Quaternion.identity);
 
-            yield return new WaitForSeconds(Random.Range(5f, 10f));
+            yield return new WaitForSeconds(Random.Range(7f, 10f));
         }
     }
 
