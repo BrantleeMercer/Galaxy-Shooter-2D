@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
 
 #region Serialize Fields
 
-    [SerializeField] private float _speed = 4f;
+    [SerializeField] private float _speed = 4f, _ramSpeed = 5f;
     [SerializeField] private GameObject _laserPrefab;
 
 #endregion
@@ -51,17 +51,18 @@ public class Enemy : MonoBehaviour
        }
 
        _enemyShield = transform.GetChild(0);
+       if (_enemyShield == null)
+       {
+           Debug.LogError("_enemyShield :: Enemy == null");
+       }
 
        float chanceForShield = Random.value;
 
        if (chanceForShield <= .3f)
        {
            _isShieldActive = true;
-           Debug.Log($"Enemy Shield: {_enemyShield}");
            _enemyShield.gameObject.SetActive(true);
        }
-       Debug.Log($"Enemy chance for shield: {chanceForShield}");
-       Debug.Log($"Enemy shield is active: {_isShieldActive}");
        
    }
 
@@ -108,18 +109,21 @@ public class Enemy : MonoBehaviour
 
     private void EnemyMovement()
     {
-        if (_id == 0)
+        if (_id == 0 && _isAlive)
         {
             transform.Translate(Vector3.down * _speed * Time.deltaTime);
-        
+            
             if (transform.position.y < -5.4f)
             {
                 float randX = Random.Range(-9.4f, 9.4f);
                 transform.position = new Vector3(randX, 7.3f, 0);
             }
+
+            RamPlayer();
+
         }
 
-        if (_id == 1)
+        if (_id == 1 && _isAlive)
         {
             transform.Translate(Vector3.left * _speed * Time.deltaTime);
         
@@ -171,6 +175,16 @@ public class Enemy : MonoBehaviour
     public void SetEnemyID(int id)
     {
         _id = id;
+    }
+
+    public void RamPlayer()
+    {
+        float distanceBetweenPlayer = Vector3.Distance(transform.position, _player.transform.position);
+
+        if (distanceBetweenPlayer < 3f && !_isShieldActive)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _ramSpeed * Time.deltaTime);
+        }
     }
 
 #endregion
