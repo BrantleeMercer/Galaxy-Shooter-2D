@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     private int _shieldStrength = 0;
     private int _shotCount = 15;
     private bool _circularShotActive = false;
+    private bool _canColletPowerups = true;
     private float _maxCharge = 3f;
     private float _rateBeforeRecharge = 2f;
     private float _canRecharge = -1;
@@ -66,10 +67,25 @@ public class Player : MonoBehaviour
     private void Update()
     {
         CalculateMovement();
+        ColletPowerups();
         
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag.Equals("EnemyLaser"))
+        {
+            Destroy(other.gameObject);
+            Damage(1);
+        }
+
+        if (other.tag.Equals("LaserBeam"))
+        {
+            Damage(1);
         }
     }
 
@@ -209,18 +225,22 @@ public class Player : MonoBehaviour
         }       
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void ColletPowerups()
     {
-        if (other.tag.Equals("EnemyLaser"))
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            Destroy(other.gameObject);
-            Damage(1);
-        }
+            if (_canColletPowerups)
+            {
+                GameObject[] powerupsVisible = GameObject.FindGameObjectsWithTag("Powerup");
+                foreach (var el in powerupsVisible)
+                {
+                    el.transform.position = transform.position;
+                }
 
-        if (other.tag.Equals("LaserBeam"))
-        {
-            Damage(1);
+                _canColletPowerups = false;
+            }
         }
+        
     }
 
 #endregion
@@ -304,6 +324,7 @@ public class Player : MonoBehaviour
     {
         _shotCount = _MAXSHOTCOUNT;
         _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
+        _canColletPowerups = true;
     }
 
 #endregion
