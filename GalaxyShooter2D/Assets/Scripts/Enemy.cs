@@ -140,6 +140,8 @@ public class Enemy : MonoBehaviour
             {
                 RamPlayer();
             }
+
+            AvoidShot();
         }
 
         if (_id == 1 && _isAlive)
@@ -207,12 +209,31 @@ public class Enemy : MonoBehaviour
     private void ShootPowerups()
     {
         RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 5f), Vector2.down);
+
         if (hit.transform != null)
         {
             if (hit.transform.tag.Equals("Powerup") || hit.transform.tag.Equals("TripleShot"))
             {
                 _canShootPowerup = Time.time + _rateOfFireOnPowerups;
                 Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+            }
+        }
+
+        
+    }
+
+    private void AvoidShot()
+    {
+        GameObject playerLaser = GameObject.FindGameObjectWithTag("Laser");
+        if(playerLaser == null) 
+        { 
+            return; 
+        }
+        else
+        {
+            if (Vector3.Distance(playerLaser.transform.position, transform.position) < 3f)
+            {
+                transform.Translate(Vector3.right * (_speed + 1f) * Time.deltaTime);
             }
         }
         
