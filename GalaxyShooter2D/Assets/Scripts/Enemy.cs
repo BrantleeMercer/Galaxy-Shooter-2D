@@ -19,8 +19,8 @@ public class Enemy : MonoBehaviour
     private Player _player;
     private SpawnManager _spawnManager;
     private Transform _enemyShield;
-    private float _rateOfFire = 3f;
-    private float _canFire = -1;
+    private float _rateOfFire = 3f, _rateOfFireOnPowerups = 2f;
+    private float _canFire = -1, _canShootPowerup = -1;
     private bool _isAlive = true;
     private int _id;
     private bool _isShieldActive = false;
@@ -74,6 +74,14 @@ public class Enemy : MonoBehaviour
        if ((Time.time > _canFire) && _isAlive)
        {
            FireEnemyLaser();
+       }
+    }
+
+    private void FixedUpdate()
+    {
+        if ((Time.time > _canShootPowerup) && _isAlive)
+       {
+           ShootPowerups();
        }
     }
 
@@ -196,11 +204,18 @@ public class Enemy : MonoBehaviour
         
     }
 
-    private RaycastHit2D ShootRayCast(float direction)
+    private void ShootPowerups()
     {
-        RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - direction), Vector2.down);
-
-        return hit;
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 5f), Vector2.down);
+        if (hit.transform != null)
+        {
+            if (hit.transform.tag.Equals("Powerup") || hit.transform.tag.Equals("TripleShot"))
+            {
+                _canShootPowerup = Time.time + _rateOfFireOnPowerups;
+                Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+            }
+        }
+        
     }
 
 #endregion

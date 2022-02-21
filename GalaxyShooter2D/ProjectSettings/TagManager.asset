@@ -12,6 +12,7 @@ TagManager:
   - EnemyLaser
   - NegativePowerup
   - LaserBeam
+  - Powerup
   layers:
   - Default
   - TransparentFX

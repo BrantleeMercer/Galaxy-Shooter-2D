@@ -56,6 +56,12 @@ public class Powerup : MonoBehaviour
             
             Destroy(gameObject);
         }
+
+        if (other.transform.tag.Equals("EnemyLaser"))
+        {
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
     }
 
     private void SpawnPowerup()
