@@ -46,6 +46,10 @@ public class Powerup : MonoBehaviour
                         player.ActivateCircularShot();
                     break; 
 
+                    case 6: // 6 = Homing Missile powerup
+                        player.ActivateMissileRefillPowerup();
+                    break;
+
                     default:
                         Debug.LogError("Powerup Not Accounted For");
                     break;                 

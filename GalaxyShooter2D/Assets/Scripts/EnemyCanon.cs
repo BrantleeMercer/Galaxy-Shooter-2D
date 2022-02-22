@@ -110,6 +110,15 @@ public class EnemyCanon : MonoBehaviour
 
             LaserCanonDeath();
         }
+
+        if (other.tag.Equals("Missile"))
+        {
+            Destroy(other.gameObject);
+            
+            _player.AddToScore(10);
+
+            LaserCanonDeath();
+        }
     }
 
     public void SetLaserActive(bool isLaserActive)

@@ -8,13 +8,13 @@ public class Player : MonoBehaviour
 
 #region Serialize Fields
 
-    [SerializeField] private GameObject _laserPrefab, _tripleShotPrefab;
+    [SerializeField] private GameObject _laserPrefab, _tripleShotPrefab, _missilePrefab;
     [SerializeField] private GameObject[] _engineDamage;
-    [SerializeField] private float _rateOfFire = 0.5f, _speed = 5f, _boostedSpeed = 9f;
+    [SerializeField] private float _rateOfFire = 0.5f, _rateOfFireMissile = 1f, _speed = 5f, _boostedSpeed = 9f;
     [SerializeField] private int _playerHealth = 3, _score = 0;
     [SerializeField] private float thrusterSpeed = 7f;
     [SerializeField] private float thrustAndBoost = 12f;
-    [SerializeField] private Text _shotCountText;
+    [SerializeField] private Text _shotCountText, _missileCountText;
     [SerializeField] private GameObject _circularShotPrefab;
     [SerializeField] private Image _thrusterChargeBar;
     [SerializeField] private Camera _mainCamera;
@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     private bool _isThrusterActive = false;
     private int _shieldStrength = 0;
     private int _shotCount = 15;
+    private int _missileCount = 0;
     private bool _circularShotActive = false;
     private bool _canColletPowerups = true;
     private float _maxCharge = 3f;
@@ -34,7 +35,8 @@ public class Player : MonoBehaviour
     private float _canRecharge = -1;
     private float _cameraShakeTime = .5f;
     private const int _MAXSHOTCOUNT = 15;
-    private float _canFire = -1f;
+    private const int _MAXMISSILECOUNT = 5;
+    private float _canFire = -1f, _canFireMissile = -1;
     private SpawnManager _spawnManager;
     private UIManager _uiManager;
     private bool _tripleShotActive = false, _isSpeedBoosted = false, _isShieldActive = false;
@@ -62,6 +64,7 @@ public class Player : MonoBehaviour
         
         _shieldVisualizer = transform.GetChild(0);
         _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
+        _missileCountText.text = $"Missiles: {_missileCount}/{_MAXMISSILECOUNT}";
     }
 
     private void Update()
@@ -72,6 +75,11 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F) && Time.time > _canFireMissile)
+        {
+            FireHomingMissile();
         }
     }
 
@@ -225,6 +233,22 @@ public class Player : MonoBehaviour
         }       
     }
 
+    private void FireHomingMissile()
+    {
+        if (_missileCount == 0)
+        {
+            return;
+        }
+
+        _missileCount--;
+        _missileCountText.text = $"Missiles: {_missileCount}/{_MAXMISSILECOUNT}";
+
+        _canFireMissile = Time.time + _rateOfFireMissile;
+        GameObject missile = Instantiate(_missilePrefab, transform.position, Quaternion.identity);
+        Destroy(missile, 5f);
+
+    }
+
     private void ColletPowerups()
     {
         if (Input.GetKeyDown(KeyCode.C))
@@ -237,6 +261,7 @@ public class Player : MonoBehaviour
                     el.transform.position = transform.position;
                 }
 
+                _uiManager.UpdateMagnetImage(false);
                 _canColletPowerups = false;
             }
         }
@@ -324,7 +349,9 @@ public class Player : MonoBehaviour
     {
         _shotCount = _MAXSHOTCOUNT;
         _shotCountText.text = $"Shots: {_shotCount}/{_MAXSHOTCOUNT}";
+
         _canColletPowerups = true;
+        _uiManager.UpdateMagnetImage(true);
     }
 
 #endregion
@@ -385,6 +412,11 @@ public class Player : MonoBehaviour
         StartCoroutine(nameof(DeactivateCircularShot));
     }
 
+    public void ActivateMissileRefillPowerup()
+    {
+        _missileCount = _MAXMISSILECOUNT;
+        _missileCountText.text = $"Missiles: {_missileCount}/{_MAXMISSILECOUNT}";
+    }
 
 /************** Negative Effects ***************/
 

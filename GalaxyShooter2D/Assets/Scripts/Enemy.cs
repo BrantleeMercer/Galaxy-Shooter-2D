@@ -109,6 +109,19 @@ public class Enemy : MonoBehaviour
             PlayDeathAnimation();
             
         }
+        else if (other.tag.Equals("Missile"))
+        {
+            Destroy(other.gameObject);
+            
+            if (_player != null && !_isShieldActive)
+            {
+                _player.AddToScore(10);
+            }
+
+            PlayDeathAnimation();
+            
+        }
+
     }
 #endregion
 

@@ -13,6 +13,7 @@ TagManager:
   - NegativePowerup
   - LaserBeam
   - Powerup
+  - Missile
   layers:
   - Default
   - TransparentFX

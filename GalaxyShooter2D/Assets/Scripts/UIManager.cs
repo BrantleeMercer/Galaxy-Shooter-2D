@@ -6,15 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private Text _scoreText, _gameOverText, _restartInstructionsText;
+    [SerializeField] private Text _scoreText, _gameOverText, _restartInstructionsText, _waveCounterText;
     [SerializeField] private Sprite[] _livesSprites;
-    [SerializeField] private Image _livesImage;
+    [SerializeField] private Image _livesImage, _magnetImage;
     private string _scoreString = "Score: ";
 
     void Start()
     {
         _scoreText.text = _scoreString + 0;
         _gameOverText.gameObject.SetActive(false);
+
+        ShowWaveCounter();
     }
 
     public void UpdateLivesImage(int currentHealth)
@@ -37,10 +39,20 @@ public class UIManager : MonoBehaviour
         _scoreText.text = _scoreString + score;
     }
 
+    public void UpdateMagnetImage(bool showImage)
+    {
+        _magnetImage.gameObject.SetActive(showImage);
+    }
+
     public void ShowGameOver()
     {
         GameManager.instance.SetGameOver(true);
-        StartCoroutine(nameof(GameOverFlickerRoutine));
+        StartCoroutine(GameOverFlickerRoutine());
+    }
+
+    public void ShowWaveCounter()
+    {
+        StartCoroutine(ShowWaveCounterRoutine());
     }
 
 #region Coroutines
@@ -59,6 +71,26 @@ public class UIManager : MonoBehaviour
             _restartInstructionsText.text = "";
             yield return new WaitForSeconds(.5f);
         }
+    }
+
+    public IEnumerator ShowWaveCounterRoutine()
+    {
+        _waveCounterText.gameObject.SetActive(true);
+        
+        int waveIndex = GameManager.instance.GetWaveIndex();
+
+        if(waveIndex == 4)
+        {
+            _waveCounterText.text = "Final Wave!";
+        }
+        else
+        {
+            _waveCounterText.text = $"Wave: {waveIndex}";
+        }
+
+        yield return new WaitForSeconds (3f);
+        _waveCounterText.gameObject.SetActive(false);
+        
     }
 
 #endregion

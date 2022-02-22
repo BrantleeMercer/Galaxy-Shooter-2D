@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     private bool _isGameOver = false;
     private int _waveIndex = 1;
 
+
 #endregion
 
 
@@ -74,12 +75,19 @@ public class GameManager : MonoBehaviour
         Player player = GameObject.Find("Player").GetComponent<Player>();
         if (player == null)
         {
-            Debug.LogError("_player :: GameManager == null");
+            Debug.LogError("player :: GameManager == null");
+        }
+
+        UIManager uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (uiManager == null)
+        {
+            Debug.LogError("uiManager :: GameManager == null");
         }
 
         Instantiate(_asteroidPrefab, _asteroidPrefab.transform.position, Quaternion.identity);
         player.ResetShotCount();
         _waveIndex++;
+        uiManager.ShowWaveCounter();
     }
 
     public int GetWaveIndex()
