@@ -14,6 +14,10 @@ TagManager:
   - LaserBeam
   - Powerup
   - Missile
+  - Bullet
+  - BossShield
+  - LeftBound
+  - RightBound
   layers:
   - Default
   - TransparentFX

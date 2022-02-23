@@ -8,6 +8,7 @@ public class SpawnManager : MonoBehaviour
 #region Serialize Fields
 
     [SerializeField] private GameObject _enemyCanonPrefab, _enemyPrefab, _enemyContainer;
+    [SerializeField] private GameObject _bossPrefab;
     [SerializeField] private GameObject[] _listOfNegativePowerups;
     [SerializeField] private GameObject[] _listOfPowerupsRare, _listOfPowerupsCommon;
 
@@ -48,7 +49,7 @@ public class SpawnManager : MonoBehaviour
             SetStopSpawingPowerups(true);
             _currentEnemiesDefeated = 0;
             _totalEnemiesSpawned = 0;
-            _maxEnemiesInWave += 3;
+            _maxEnemiesInWave += 1;
             GameManager.instance.StartNewWave();
         }
     }
@@ -60,18 +61,25 @@ public class SpawnManager : MonoBehaviour
 
     public void StartSpawning()
     {
+        int waveIndex = GameManager.instance.GetWaveIndex();
+
         StartCoroutine(SpawnBasicEnemyRoutine());
         StartCoroutine(SpawnHorzEnemyRoutine());
 
-        if (GameManager.instance.GetWaveIndex() >= 1)
+        if (waveIndex >= 1)
         {
             StartCoroutine(SpawnPowerupRoutine());
             StartCoroutine(SpawnNegativePowerupRoutine());
         }
 
-        if (GameManager.instance.GetWaveIndex() >= 2)
+        if (waveIndex >= 2)
         {
             StartCoroutine(SpawnEnemyCanonRoutine());
+        }
+
+        if (waveIndex == 4)
+        {
+            StartCoroutine(SpawnBossRoutine());
         }
         
     }
@@ -199,6 +207,12 @@ public class SpawnManager : MonoBehaviour
 
             yield return new WaitForSeconds(Random.Range(7f, 10f));
         }
+    }
+
+    IEnumerator SpawnBossRoutine()
+    {
+        yield return null;
+        Instantiate(_bossPrefab, new Vector3(0f, 7f, 0f), Quaternion.identity);
     }
 
 #endregion

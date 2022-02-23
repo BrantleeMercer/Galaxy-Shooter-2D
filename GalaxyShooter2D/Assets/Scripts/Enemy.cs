@@ -130,14 +130,18 @@ public class Enemy : MonoBehaviour
 
     private void EnemyMovement()
     {
-        if (transform.position.y < _player.transform.position.y)
+        if(_player != null)
         {
-            _isBehindPlayer = true;
+            if (transform.position.y < _player.transform.position.y)
+            {
+                _isBehindPlayer = true;
+            }
+            else 
+            {
+                _isBehindPlayer = false;
+            }
         }
-        else 
-        {
-            _isBehindPlayer = false;
-        }
+        
 
         if (_id == 0 && _isAlive)
         {
@@ -145,7 +149,7 @@ public class Enemy : MonoBehaviour
             
             if (transform.position.y < -5.4f)
             {
-                float randX = Random.Range(-9.4f, 9.4f);
+                float randX = Random.Range(-13f, 13f);
                 transform.position = new Vector3(randX, 7.3f, 0);
             }
 
@@ -161,10 +165,10 @@ public class Enemy : MonoBehaviour
         {
             transform.Translate(Vector3.left * _speed * Time.deltaTime);
         
-            if (transform.position.x < -9.4f)
+            if (transform.position.x < -14f)
             {
                 float randY = Random.Range(2.5f,5.3f);
-                transform.position = new Vector3(9.4f, randY, 0);
+                transform.position = new Vector3(14f, randY, 0);
             }
         }
         

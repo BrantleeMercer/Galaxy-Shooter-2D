@@ -168,13 +168,13 @@ public class Player : MonoBehaviour
 
     private void HorizontalBounds()
     {
-        float newBound = 10.8f;
+        float newBound = 15f;
 
-        if (transform.position.x > 11f)
+        if (transform.position.x > 15f)
         {
             transform.position = new Vector3(-newBound, transform.position.y, 0);
         }
-        else if (transform.position.x < -11f)
+        else if (transform.position.x < -15f)
         {
             transform.position = new Vector3(newBound, transform.position.y, 0);
         }
