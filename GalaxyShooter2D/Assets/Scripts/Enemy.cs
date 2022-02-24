@@ -149,7 +149,7 @@ public class Enemy : MonoBehaviour
             
             if (transform.position.y < -5.4f)
             {
-                float randX = Random.Range(-13f, 13f);
+                float randX = Random.Range(-9f, 9f);
                 transform.position = new Vector3(randX, 7.3f, 0);
             }
 
@@ -165,10 +165,10 @@ public class Enemy : MonoBehaviour
         {
             transform.Translate(Vector3.left * _speed * Time.deltaTime);
         
-            if (transform.position.x < -14f)
+            if (transform.position.x < -9f)
             {
                 float randY = Random.Range(2.5f,5.3f);
-                transform.position = new Vector3(14f, randY, 0);
+                transform.position = new Vector3(9f, randY, 0);
             }
         }
         
